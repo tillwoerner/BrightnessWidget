@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -75,6 +76,7 @@ public class BrightnessWidgetProvider extends AppWidgetProvider {
 	    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 	    // Get the layout for the App Widget and attach an on-click listener to the button
 	    views.setOnClickPendingIntent(R.id.button_20, pendingIntent);
+//	    views.setInt(R.id.button_20, "setTextColor", Color.BLACK);
 
 	    // 40 percent button
 	    // Create an Intent to launch ExampleActivity
