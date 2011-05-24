@@ -4,9 +4,9 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:padding="1dip">
-    <Button android:background="@android:color/transparent" android:textColor="@android:color/white" android:layout_weight="1" android:layout_height="fill_parent" android:text="@string/percent_20" android:layout_width="wrap_content" android:id="@+id/button_20"></Button>
-    <Button android:background="@android:color/transparent" android:textColor="@android:color/white" android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="@string/percent_40" android:id="@+id/button_40"></Button>
-    <Button android:background="@android:color/transparent" android:textColor="@android:color/white" android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="@string/percent_60" android:id="@+id/button_60"></Button>
-    <Button android:background="@android:color/transparent" android:textColor="@android:color/white" android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="@string/percent_80" android:id="@+id/button_80"></Button>
-    <Button android:background="@android:color/transparent" android:textColor="@android:color/white" android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="@string/percent_100" android:id="@+id/button_100"></Button>
+    <Button android:background="@android:color/transparent" android:textColor="@android:color/white" android:layout_weight="1" android:layout_height="fill_parent" android:text="@string/percent_20" android:layout_width="wrap_content" android:id="@+id/button_1"></Button>
+    <Button android:background="@android:color/transparent" android:textColor="@android:color/white" android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="@string/percent_40" android:id="@+id/button_2"></Button>
+    <Button android:background="@android:color/transparent" android:textColor="@android:color/white" android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="@string/percent_60" android:id="@+id/button_3"></Button>
+    <Button android:background="@android:color/transparent" android:textColor="@android:color/white" android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="@string/percent_80" android:id="@+id/button_4"></Button>
+    <Button android:background="@android:color/transparent" android:textColor="@android:color/white" android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="@string/percent_100" android:id="@+id/button_5"></Button>
 </LinearLayout>

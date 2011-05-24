@@ -2,5 +2,5 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
 	android:minWidth="294dp" android:minHeight="72dp"
 	android:updatePeriodMillis="0" android:initialLayout="@layout/brightness_widget"
-	>
+	android:configure="priv.twoerner.brightnesswidget.WidgetSettings">
 </appwidget-provider>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orderingFromXml="true" android:key="brightnesswidget_prefs"
+	android:title="@string/settings_title" android:persistent="true">
+	<PreferenceCategory android:orderingFromXml="true"
+		android:title="Colors">
+
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Button values"
+		android:orderingFromXml="true">
+
+		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
+			android:key="button1" android:title="Button 1" android:defaultValue="20">
+		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
+		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
+			android:key="button2" android:title="Button 2" android:defaultValue="40">
+		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
+		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
+			android:key="button3" android:title="Button 3" android:defaultValue="60">
+		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
+		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
+			android:key="button4" android:title="Button 4" android:defaultValue="80">
+		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
+		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
+			android:key="button5" android:title="Button 5" android:defaultValue="100">
+		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
+
+
+	</PreferenceCategory>
+</PreferenceScreen>

@@ -1,11 +1,15 @@
 package priv.twoerner.brightnesswidget;
 
-import android.app.PendingIntent;
+import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -13,12 +17,8 @@ import android.widget.RemoteViews;
 public class BrightnessWidgetProvider extends AppWidgetProvider {
 
     private static final String TAG = "BrightnessWidgetProvider";
-
-    private static final String ACTION_20 = "ACTION_20";
-    private static final String ACTION_40 = "ACTION_40";
-    private static final String ACTION_60 = "ACTION_60";
-    private static final String ACTION_80 = "ACTION_80";
-    private static final String ACTION_100 = "ACTION_100";
+    private static final int MESSAGE_STOP_SERVICE = 1;
+    private static final String UPDATE_SERVICE_ACTION = "action";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -28,37 +28,22 @@ public class BrightnessWidgetProvider extends AppWidgetProvider {
 	Log.d(TAG, intent.getAction());
 
 	if (intent != null && intent.getAction() != null) {
-	    int sysBackLightValue = 255;
-	    float factor = 1.0f;
-	    if (intent.getAction().equals(ACTION_20)) {
-		factor = 20f / 100f;
-	    } else if (intent.getAction().equals(ACTION_40)) {
-		factor = 40f / 100f;
-	    } else if (intent.getAction().equals(ACTION_60)) {
-		factor = 60f / 100f;
-	    } else if (intent.getAction().equals(ACTION_80)) {
-		factor = 80f / 100f;
-	    } else if (intent.getAction().equals(ACTION_100)) {
-		factor = 100f / 100f;
-	    }
-	    sysBackLightValue = (int) (factor * 255);
-	    Log.d(TAG, Integer.toString(sysBackLightValue));
-	    Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 0);
-	    Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, sysBackLightValue);
+	    String intentAction = intent.getAction();
 
-	    Intent updateIntent = new Intent();
-	    updateIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	    updateIntent.putExtra("factor", factor);
-	    updateIntent.setClass(context, UpdateBrightnessActivity.class);
-	    context.startActivity(updateIntent);
+	    if (intentAction.equals(ViewConfig.ACTION_1) || intentAction.equals(ViewConfig.ACTION_2)
+		    || intentAction.equals(ViewConfig.ACTION_3) || intentAction.equals(ViewConfig.ACTION_4)
+		    || intentAction.equals(ViewConfig.ACTION_5)) {
+		Intent serviceIntent = new Intent(context, UpdateService.class);
+		serviceIntent.putExtra(UPDATE_SERVICE_ACTION, intent.getAction());
+		Log.d(TAG, "Starting service");
+		context.startService(serviceIntent);
+	    }
 
 	}
-
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-	// TODO Auto-generated method stub
 	Log.d(TAG, "onUpdate");
 
 	final int N = appWidgetIds.length;
@@ -69,50 +54,85 @@ public class BrightnessWidgetProvider extends AppWidgetProvider {
 
 	    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.brightness_widget);
 
-	    // 20 percent button
-	    // Create an Intent to launch ExampleActivity
-	    Intent intent = new Intent(context, BrightnessWidgetProvider.class);
-	    intent.setAction(ACTION_20);
-	    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-	    // Get the layout for the App Widget and attach an on-click listener to the button
-	    views.setOnClickPendingIntent(R.id.button_20, pendingIntent);
-//	    views.setInt(R.id.button_20, "setTextColor", Color.BLACK);
-
-	    // 40 percent button
-	    // Create an Intent to launch ExampleActivity
-	    intent = new Intent(context, BrightnessWidgetProvider.class);
-	    intent.setAction(ACTION_40);
-	    pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-	    // Get the layout for the App Widget and attach an on-click listener to the button
-	    views.setOnClickPendingIntent(R.id.button_40, pendingIntent);
-
-	    // 60 percent button
-	    // Create an Intent to launch ExampleActivity
-	    intent = new Intent(context, BrightnessWidgetProvider.class);
-	    intent.setAction(ACTION_60);
-	    pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-	    // Get the layout for the App Widget and attach an on-click listener to the button
-	    views.setOnClickPendingIntent(R.id.button_60, pendingIntent);
-
-	    // 80 percent button
-	    // Create an Intent to launch ExampleActivity
-	    intent = new Intent(context, BrightnessWidgetProvider.class);
-	    intent.setAction(ACTION_80);
-	    pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-	    // Get the layout for the App Widget and attach an on-click listener to the button
-	    views.setOnClickPendingIntent(R.id.button_80, pendingIntent);
-
-	    // 100 percent button
-	    // Create an Intent to launch ExampleActivity
-	    intent = new Intent(context, BrightnessWidgetProvider.class);
-	    intent.setAction(ACTION_100);
-	    pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-	    // Get the layout for the App Widget and attach an on-click listener to the button
-	    views.setOnClickPendingIntent(R.id.button_100, pendingIntent);
-
+	    views = ViewConfig.configView(views, context);
 	    // Tell the AppWidgetManager to perform an update on the current App Widget
 	    appWidgetManager.updateAppWidget(appWidgetId, views);
 	}
+    }
+
+    public static class UpdateService extends Service {
+
+	private static final String TAG = "UpdateService";
+
+	@Override
+	public int onStartCommand(final Intent intent, int flags, int startId) {
+
+	    final Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+		    if (msg != null) {
+			if (msg.what == MESSAGE_STOP_SERVICE) {
+			    Log.d(TAG, "Stopping service");
+			    stopSelf();
+			}
+		    }
+		}
+	    };
+
+	    mHandler.post(new Runnable() {
+
+		@Override
+		public void run() {
+		    try {
+			int sysBackLightValue = 255;
+			float factor = 1.0f;
+			String factorStr = "100";
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(UpdateService.this);
+
+			if (intent == null || intent.getStringExtra(UPDATE_SERVICE_ACTION) == null) {
+			    return;
+			}
+
+			String action = intent.getStringExtra(UPDATE_SERVICE_ACTION);
+
+			if (action.equals(ViewConfig.ACTION_1)) {
+			    factorStr = prefs.getString("button1", "20");
+			} else if (action.equals(ViewConfig.ACTION_2)) {
+			    factorStr = prefs.getString("button2", "40");
+			} else if (action.equals(ViewConfig.ACTION_3)) {
+			    factorStr = prefs.getString("button3", "60");
+			} else if (action.equals(ViewConfig.ACTION_4)) {
+			    factorStr = prefs.getString("button4", "80");
+			} else if (action.equals(ViewConfig.ACTION_5)) {
+			    factorStr = prefs.getString("button5", "100");
+			}
+
+			factor = Float.parseFloat(factorStr) / 100f;
+			sysBackLightValue = (int) (factor * 255);
+			Log.d(TAG, Integer.toString(sysBackLightValue));
+			Settings.System.putInt(UpdateService.this.getContentResolver(),
+				Settings.System.SCREEN_BRIGHTNESS_MODE, 0);
+			Settings.System.putInt(UpdateService.this.getContentResolver(),
+				Settings.System.SCREEN_BRIGHTNESS, sysBackLightValue);
+
+			Intent updateIntent = new Intent();
+			updateIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			updateIntent.putExtra("factor", factor);
+			updateIntent.setClass(UpdateService.this, UpdateBrightnessActivity.class);
+			UpdateService.this.startActivity(updateIntent);
+		    } finally {
+			mHandler.sendMessage(mHandler.obtainMessage(MESSAGE_STOP_SERVICE));
+		    }
+		}
+	    });
+	    return super.onStartCommand(intent, flags, startId);
+	}
+
+	@Override
+	public IBinder onBind(Intent intent) {
+	    return null;
+	}
+
     }
 
 }
