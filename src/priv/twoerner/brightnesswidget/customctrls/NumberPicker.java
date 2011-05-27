@@ -48,6 +48,7 @@ public class NumberPicker extends LinearLayout implements OnClickListener, OnFoc
 
     private static final int DEFAULT_MAX = 200;
     private static final int DEFAULT_MIN = 0;
+    private static final int DEFAULT_STEP = 1;
 
     public interface OnChangedListener {
 	void onChanged(NumberPicker picker, int oldVal, int newVal);
@@ -96,6 +97,7 @@ public class NumberPicker extends LinearLayout implements OnClickListener, OnFoc
     protected int mEnd;
     protected int mCurrent;
     protected int mPrevious;
+    protected int mStep;
     private OnChangedListener mListener;
     private Formatter mFormatter;
     private long mSpeed = 300;
@@ -140,6 +142,7 @@ public class NumberPicker extends LinearLayout implements OnClickListener, OnFoc
 
 	mStart = DEFAULT_MIN;
 	mEnd = DEFAULT_MAX;
+	mStep = DEFAULT_STEP;
     }
 
     @Override
@@ -191,6 +194,10 @@ public class NumberPicker extends LinearLayout implements OnClickListener, OnFoc
 	mCurrent = start;
 	updateView();
     }
+    
+    public void setStep(int step){
+	mStep = step;
+    }
 
     public void setCurrent(int current) {
 	mCurrent = current;
@@ -212,9 +219,9 @@ public class NumberPicker extends LinearLayout implements OnClickListener, OnFoc
 
 	// now perform the increment/decrement
 	if (R.id.increment == v.getId()) {
-	    changeCurrent(mCurrent + 1);
+	    changeCurrent(mCurrent + mStep);
 	} else if (R.id.decrement == v.getId()) {
-	    changeCurrent(mCurrent - 1);
+	    changeCurrent(mCurrent - mStep);
 	}
     }
 

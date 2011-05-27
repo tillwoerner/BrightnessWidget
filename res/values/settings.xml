@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources><string name="settings_title">Settings</string>
+<resources>
+	<string name="settings_title">Settings</string>
+	<string name="settings_control_touch_brightness_summary_on">The brightness of the touch buttons is currently
+		controlled</string>
+	<string name="settings_control_touch_brightness_summary_off">The brightness of the touch buttons is currently
+		NOT controlled</string>
+	<string name="settings_control_touch_brightness_summary_na">Touch Brightness app is not available</string>
 </resources>

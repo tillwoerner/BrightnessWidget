@@ -1,11 +1,15 @@
 package priv.twoerner.brightnesswidget;
 
+import java.util.List;
+
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -19,6 +23,8 @@ public class BrightnessWidgetProvider extends AppWidgetProvider {
     private static final String TAG = "BrightnessWidgetProvider";
     private static final int MESSAGE_STOP_SERVICE = 1;
     private static final String UPDATE_SERVICE_ACTION = "action";
+    private final static String ACTION_BRIGHTNESS_EXTRA = "brightness";
+    public final static String ACTION_CHANGE_TOUCH_BRIGHTNESS = "priv.twoerner.touchbrightness.ACTION_CHANGE_BRIGHTNESS";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -87,9 +93,10 @@ public class BrightnessWidgetProvider extends AppWidgetProvider {
 			int sysBackLightValue = 255;
 			float factor = 1.0f;
 			String factorStr = "100";
+			String touchButtonBrightness = null;
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(UpdateService.this);
 
-			if (intent == null || intent.getStringExtra(UPDATE_SERVICE_ACTION) == null) {
+			if (intent == null || intent.getStringExtra(UPDATE_SERVICE_ACTION) == null || prefs == null) {
 			    return;
 			}
 
@@ -97,14 +104,19 @@ public class BrightnessWidgetProvider extends AppWidgetProvider {
 
 			if (action.equals(ViewConfig.ACTION_1)) {
 			    factorStr = prefs.getString("button1", "20");
+			    touchButtonBrightness = prefs.getString("button1_touchbrightness", "10");
 			} else if (action.equals(ViewConfig.ACTION_2)) {
 			    factorStr = prefs.getString("button2", "40");
+			    touchButtonBrightness = prefs.getString("button2_touchbrightness", "10");
 			} else if (action.equals(ViewConfig.ACTION_3)) {
 			    factorStr = prefs.getString("button3", "60");
+			    touchButtonBrightness = prefs.getString("button3_touchbrightness", "10");
 			} else if (action.equals(ViewConfig.ACTION_4)) {
 			    factorStr = prefs.getString("button4", "80");
+			    touchButtonBrightness = prefs.getString("button4_touchbrightness", "10");
 			} else if (action.equals(ViewConfig.ACTION_5)) {
 			    factorStr = prefs.getString("button5", "100");
+			    touchButtonBrightness = prefs.getString("button5_touchbrightness", "10");
 			}
 
 			factor = Float.parseFloat(factorStr) / 100f;
@@ -114,6 +126,20 @@ public class BrightnessWidgetProvider extends AppWidgetProvider {
 				Settings.System.SCREEN_BRIGHTNESS_MODE, 0);
 			Settings.System.putInt(UpdateService.this.getContentResolver(),
 				Settings.System.SCREEN_BRIGHTNESS, sysBackLightValue);
+
+			if (prefs.getBoolean("control_touch_brightness", false)) {
+			    Intent touchBrightnessIntent = new Intent();
+			    touchBrightnessIntent.setAction(ACTION_CHANGE_TOUCH_BRIGHTNESS);
+			    touchBrightnessIntent.putExtra(ACTION_BRIGHTNESS_EXTRA,
+				    Integer.parseInt(touchButtonBrightness));
+
+			    PackageManager packageManager = getPackageManager();
+			    List<ResolveInfo> list = packageManager.queryBroadcastReceivers(touchBrightnessIntent, 0);
+			    if (list != null && list.size() > 0) {
+				Log.d(TAG, "Sending [" + touchButtonBrightness + "] to touch brightness");
+				sendBroadcast(touchBrightnessIntent);
+			    }
+			}
 
 			Intent updateIntent = new Intent();
 			updateIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

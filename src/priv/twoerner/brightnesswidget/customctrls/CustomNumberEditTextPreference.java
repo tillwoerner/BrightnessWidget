@@ -44,6 +44,9 @@ public class CustomNumberEditTextPreference extends DialogPreference {
 	if(min != -1 && max != -1 && max > min){
 	    mNumberPicker.setRange(min, max);
 	}
+	
+	int step = attrs.getAttributeIntValue(null, "step", 1);
+	mNumberPicker.setStep(step);
     }
 
     public CustomNumberEditTextPreference(Context context, AttributeSet attrs) {

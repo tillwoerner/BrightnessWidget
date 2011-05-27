@@ -2,29 +2,63 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orderingFromXml="true" android:key="brightnesswidget_prefs"
 	android:title="@string/settings_title" android:persistent="true">
-	<PreferenceCategory android:orderingFromXml="true"
-		android:title="Colors">
-
+	<!-- PreferenceCategory android:orderingFromXml="true" android:title="Colors"> 
+		</PreferenceCategory -->
+	<PreferenceCategory android:title="General">
+		<CheckBoxPreference android:key="control_touch_brightness"
+			android:defaultValue="false"
+			android:summaryOn="@string/settings_control_touch_brightness_summary_on"
+			android:summaryOff="@string/settings_control_touch_brightness_summary_off"
+			android:title="Touch brightness control"></CheckBoxPreference>
 	</PreferenceCategory>
-	<PreferenceCategory android:title="Button values"
+	<PreferenceCategory android:title="Button 1"
 		android:orderingFromXml="true">
-
 		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
 			android:key="button1" android:title="Button 1" android:defaultValue="20">
 		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
 		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
+			android:key="button1_touchbrightness" android:title="Button 1 - Touch Brightness"
+			min="0" max="20" android:defaultValue="10" android:enabled="false">
+		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Button 2"
+		android:orderingFromXml="true">
+		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
 			android:key="button2" android:title="Button 2" android:defaultValue="40">
 		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
+		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
+			android:key="button2_touchbrightness" android:title="Button 2 - Touch Brightness"
+			min="0" max="20" android:defaultValue="10" android:enabled="false">
+		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Button 3"
+		android:orderingFromXml="true">
 		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
 			android:key="button3" android:title="Button 3" android:defaultValue="60">
 		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
 		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
+			android:key="button3_touchbrightness" android:title="Button 3 - Touch Brightness"
+			min="0" max="20" android:defaultValue="10" android:enabled="false">
+		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Button 4"
+		android:orderingFromXml="true">
+		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
 			android:key="button4" android:title="Button 4" android:defaultValue="80">
 		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
 		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
+			android:key="button4_touchbrightness" android:title="Button 4 - Touch Brightness"
+			min="0" max="20" android:defaultValue="10" android:enabled="false">
+		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Button 5"
+		android:orderingFromXml="true">
+		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
 			android:key="button5" android:title="Button 5" android:defaultValue="100">
 		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
-
-
+		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
+			android:key="button5_touchbrightness" android:title="Button 5 - Touch Brightness"
+			min="0" max="20" android:defaultValue="10" android:enabled="false">
+		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
 	</PreferenceCategory>
 </PreferenceScreen>
