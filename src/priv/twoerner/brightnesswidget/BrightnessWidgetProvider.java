@@ -1,6 +1,7 @@
 package priv.twoerner.brightnesswidget;
 
 import java.util.List;
+import java.util.Map;
 
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
@@ -8,8 +9,10 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -32,6 +35,14 @@ public class BrightnessWidgetProvider extends AppWidgetProvider {
 
 	Log.d(TAG, "onReceive");
 	Log.d(TAG, intent.getAction());
+	Bundle extras = intent.getExtras();
+	if (extras != null
+		&& extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID) != AppWidgetManager.INVALID_APPWIDGET_ID) {
+	    Log.d(TAG, "Widget ID = " + extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID));
+	} else {
+	    Log.d(TAG, "extras is null");
+	    return;
+	}
 
 	if (intent != null && intent.getAction() != null) {
 	    String intentAction = intent.getAction();
@@ -41,6 +52,8 @@ public class BrightnessWidgetProvider extends AppWidgetProvider {
 		    || intentAction.equals(ViewConfig.ACTION_5)) {
 		Intent serviceIntent = new Intent(context, UpdateService.class);
 		serviceIntent.putExtra(UPDATE_SERVICE_ACTION, intent.getAction());
+		serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+			extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID));
 		Log.d(TAG, "Starting service");
 		context.startService(serviceIntent);
 	    }
@@ -60,10 +73,31 @@ public class BrightnessWidgetProvider extends AppWidgetProvider {
 
 	    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.brightness_widget);
 
-	    views = ViewConfig.configView(views, context);
+	    views = ViewConfig.configView(views, context, appWidgetId);
 	    // Tell the AppWidgetManager to perform an update on the current App Widget
 	    appWidgetManager.updateAppWidget(appWidgetId, views);
 	}
+    }
+
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+
+	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+	Editor editor = prefs.edit();
+
+	Map<String, ?> all = prefs.getAll();
+
+	for (String key : all.keySet()) {
+	    for (int i = 0; i < appWidgetIds.length; i++) {
+		if(key.endsWith("_" + appWidgetIds[i])){
+		    editor.remove(key);
+		    break;
+		}
+	    }
+	}
+
+	editor.commit();
     }
 
     public static class UpdateService extends Service {
@@ -97,37 +131,45 @@ public class BrightnessWidgetProvider extends AppWidgetProvider {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(UpdateService.this);
 
 			if (intent == null || intent.getStringExtra(UPDATE_SERVICE_ACTION) == null || prefs == null) {
+			    Log.d(TAG, "Intent null or action null or prefs null");
 			    return;
 			}
+			if (intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+				AppWidgetManager.INVALID_APPWIDGET_ID) == AppWidgetManager.INVALID_APPWIDGET_ID) {
+			    Log.d(TAG, "WidgetID not set");
+			    return;
+			}
+			int mWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+				AppWidgetManager.INVALID_APPWIDGET_ID);
 
 			String action = intent.getStringExtra(UPDATE_SERVICE_ACTION);
 
 			if (action.equals(ViewConfig.ACTION_1)) {
-			    factorStr = prefs.getString("button1", "20");
-			    touchButtonBrightness = prefs.getString("button1_touchbrightness", "10");
+			    factorStr = prefs.getString("button1_" + mWidgetId, "20");
+			    touchButtonBrightness = prefs.getString("button1_touchbrightness_" + mWidgetId, "10");
 			} else if (action.equals(ViewConfig.ACTION_2)) {
-			    factorStr = prefs.getString("button2", "40");
-			    touchButtonBrightness = prefs.getString("button2_touchbrightness", "10");
+			    factorStr = prefs.getString("button2_" + mWidgetId, "40");
+			    touchButtonBrightness = prefs.getString("button2_touchbrightness_" + mWidgetId, "10");
 			} else if (action.equals(ViewConfig.ACTION_3)) {
-			    factorStr = prefs.getString("button3", "60");
-			    touchButtonBrightness = prefs.getString("button3_touchbrightness", "10");
+			    factorStr = prefs.getString("button3_" + mWidgetId, "60");
+			    touchButtonBrightness = prefs.getString("button3_touchbrightness_" + mWidgetId, "10");
 			} else if (action.equals(ViewConfig.ACTION_4)) {
-			    factorStr = prefs.getString("button4", "80");
-			    touchButtonBrightness = prefs.getString("button4_touchbrightness", "10");
+			    factorStr = prefs.getString("button4_" + mWidgetId, "80");
+			    touchButtonBrightness = prefs.getString("button4_touchbrightness_" + mWidgetId, "10");
 			} else if (action.equals(ViewConfig.ACTION_5)) {
-			    factorStr = prefs.getString("button5", "100");
-			    touchButtonBrightness = prefs.getString("button5_touchbrightness", "10");
+			    factorStr = prefs.getString("button5_" + mWidgetId, "100");
+			    touchButtonBrightness = prefs.getString("button5_touchbrightness_" + mWidgetId, "10");
 			}
 
 			factor = Float.parseFloat(factorStr) / 100f;
 			sysBackLightValue = (int) (factor * 255);
-			Log.d(TAG, Integer.toString(sysBackLightValue));
+			Log.d(TAG, "Setting backlight value to = " + Integer.toString(sysBackLightValue));
 			Settings.System.putInt(UpdateService.this.getContentResolver(),
 				Settings.System.SCREEN_BRIGHTNESS_MODE, 0);
 			Settings.System.putInt(UpdateService.this.getContentResolver(),
 				Settings.System.SCREEN_BRIGHTNESS, sysBackLightValue);
 
-			if (prefs.getBoolean("control_touch_brightness", false)) {
+			if (prefs.getBoolean("control_touch_brightness_" + mWidgetId, false)) {
 			    Intent touchBrightnessIntent = new Intent();
 			    touchBrightnessIntent.setAction(ACTION_CHANGE_TOUCH_BRIGHTNESS);
 			    touchBrightnessIntent.putExtra(ACTION_BRIGHTNESS_EXTRA,

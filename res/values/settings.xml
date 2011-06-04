@@ -6,4 +6,5 @@
 	<string name="settings_control_touch_brightness_summary_off">The brightness of the touch buttons is currently
 		NOT controlled</string>
 	<string name="settings_control_touch_brightness_summary_na">Touch Brightness app is not available</string>
+	<string name="show_touch_brightness_value_summary">Show the values of the touch button control?</string>
 </resources>
