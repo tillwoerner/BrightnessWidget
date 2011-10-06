@@ -1,5 +1,6 @@
 package yuku.ambilwarna;
 
+import priv.twoerner.brightnesswidget.R;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
