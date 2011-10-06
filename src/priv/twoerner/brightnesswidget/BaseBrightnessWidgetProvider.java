@@ -77,7 +77,7 @@ public class BaseBrightnessWidgetProvider extends AppWidgetProvider {
 
 	    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.brightness_widget);
 
-	    views = ViewConfig.configView(views, context, appWidgetId);
+	    views = ViewConfig.configView(views, context, appWidgetId, this.getClass());
 	    // Tell the AppWidgetManager to perform an update on the current App Widget
 	    appWidgetManager.updateAppWidget(appWidgetId, views);
 	}

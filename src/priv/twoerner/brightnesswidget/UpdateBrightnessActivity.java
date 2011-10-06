@@ -35,7 +35,7 @@ public class UpdateBrightnessActivity extends Activity {
 		this.cancel();
 		finish();
 	    }
-	}, 1000, 5000);
+	}, /*1000*/ 500, 5000);
     }
 
 }

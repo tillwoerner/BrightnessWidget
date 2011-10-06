@@ -20,7 +20,7 @@ public final class ViewConfig {
     private ViewConfig() {
     };
 
-    public static RemoteViews configView(RemoteViews views, Context context, int appWidgetId) {
+    public static RemoteViews configView(RemoteViews views, Context context, int appWidgetId, Class<?> providerClass) {
 
 	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -29,15 +29,12 @@ public final class ViewConfig {
 	int mTextColor = Integer.parseInt(prefs.getString("widget_text_color_" + appWidgetId, Integer.toString(Color.WHITE)));
 
 	// 20 percent button
-	// Create an Intent to launch ExampleActivity
-	// FIXME: Use the correct class here:
-	Intent intent = new Intent(context, BaseBrightnessWidgetProvider.class);
+	Intent intent = new Intent(context, providerClass);
 	intent.setAction(ACTION_1);
 	intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 	PendingIntent pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
 	// Get the layout for the App Widget and attach an on-click listener to the button
 	views.setOnClickPendingIntent(R.id.button_1, pendingIntent);
-	// TODO: Set configured color on all buttons
 	views.setInt(R.id.button_1, "setTextColor", mTextColor);
 	if (controlTouchBrightness && showControlTouchBrightness) {
 	    views.setTextViewText(R.id.button_1,
@@ -48,8 +45,7 @@ public final class ViewConfig {
 	}
 
 	// 40 percent button
-	// Create an Intent to launch ExampleActivity
-	intent = new Intent(context, BaseBrightnessWidgetProvider.class);
+	intent = new Intent(context, providerClass);
 	intent.setAction(ACTION_2);
 	intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 	pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
@@ -65,8 +61,7 @@ public final class ViewConfig {
 	}
 
 	// 60 percent button
-	// Create an Intent to launch ExampleActivity
-	intent = new Intent(context, BaseBrightnessWidgetProvider.class);
+	intent = new Intent(context, providerClass);
 	intent.setAction(ACTION_3);
 	intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 	pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
@@ -82,8 +77,7 @@ public final class ViewConfig {
 	}
 
 	// 80 percent button
-	// Create an Intent to launch ExampleActivity
-	intent = new Intent(context, BaseBrightnessWidgetProvider.class);
+	intent = new Intent(context, providerClass);
 	intent.setAction(ACTION_4);
 	intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 	pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
@@ -99,8 +93,7 @@ public final class ViewConfig {
 	}
 
 	// 100 percent button
-	// Create an Intent to launch ExampleActivity
-	intent = new Intent(context, BaseBrightnessWidgetProvider.class);
+	intent = new Intent(context, providerClass);
 	intent.setAction(ACTION_5);
 	intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 	pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
