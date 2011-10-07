@@ -48,9 +48,9 @@ public class ColorPicker extends LinearLayout {
 	viewTarget = (ImageView) findViewById(R.id.ambilwarna_target);
 	viewContainer = (ViewGroup) findViewById(R.id.ambilwarna_viewContainer);
 
-	viewSatVal.setHue(getHue());
-
 	setColor(DEFAULT_COLOR);
+
+	viewSatVal.setHue(getHue());
 
 	viewHue.setOnTouchListener(new View.OnTouchListener() {
 	    @Override
@@ -126,7 +126,12 @@ public class ColorPicker extends LinearLayout {
 
 	viewOldColor.setBackgroundColor(color);
 	viewNewColor.setBackgroundColor(color);
+	viewSatVal.setHue(getHue());
 
+	moveTarget();
+	moveCursor();
+	
+//	viewSatVal.setHue(getHue());
     }
 
     protected void moveCursor() {
