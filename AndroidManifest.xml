@@ -25,7 +25,7 @@
 				<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"></action>
 			</intent-filter>
 		</activity>
-		<service android:name=".BrightnessWidgetProvider$UpdateService"></service>
+		<service android:name=".BaseBrightnessWidgetProvider$UpdateService"></service>
 
 
 	</application>
