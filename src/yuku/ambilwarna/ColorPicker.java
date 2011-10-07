@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class ColorPicker extends LinearLayout {
-    private static final String TAG = ColorPicker.class.getSimpleName();
+    // private static final String TAG = ColorPicker.class.getSimpleName();
 
     private static final int DEFAULT_COLOR = Color.WHITE;
 
@@ -130,8 +130,6 @@ public class ColorPicker extends LinearLayout {
 
 	moveTarget();
 	moveCursor();
-	
-//	viewSatVal.setHue(getHue());
     }
 
     protected void moveCursor() {

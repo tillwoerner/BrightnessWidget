@@ -39,7 +39,7 @@ public class WidgetSettings extends PreferenceActivity {
 	findPreference("show_touch_brightness_value_" + mAppWidgetId).setDependency("control_touch_brightness_" + mAppWidgetId);
 
 	Intent touchBrightnessIntent = new Intent();
-	touchBrightnessIntent.setAction(BrightnessWidgetProvider.ACTION_CHANGE_TOUCH_BRIGHTNESS);
+	touchBrightnessIntent.setAction(BaseBrightnessWidgetProvider.ACTION_CHANGE_TOUCH_BRIGHTNESS);
 
 	PackageManager packageManager = getPackageManager();
 	List<ResolveInfo> list = packageManager.queryBroadcastReceivers(touchBrightnessIntent, 0);
