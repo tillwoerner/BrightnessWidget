@@ -9,6 +9,7 @@
 	<string name="percent_60">60%</string>
 	<string name="percent_80">80%</string>
 	<string name="percent_100">100%</string>
+	<string name="percent_auto">Auto</string>
 
 
 	<style name="Theme.Transparent" parent="android:Theme">

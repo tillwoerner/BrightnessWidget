@@ -18,8 +18,12 @@
 		android:textColor="@android:color/white" android:layout_weight="1"
 		android:layout_height="fill_parent" android:text="@string/percent_80"
 		android:id="@+id/button_4" android:layout_width="72dip"></Button>
-	<Button android:background="@drawable/button_background_right"
+	<Button android:background="@drawable/button_background"
 		android:textColor="@android:color/white" android:layout_weight="1"
 		android:layout_height="fill_parent" android:text="@string/percent_100"
 		android:id="@+id/button_5" android:layout_width="72dip"></Button>
+	<Button android:background="@drawable/button_background_right"
+		android:textColor="@android:color/white" android:layout_weight="1"
+		android:layout_height="fill_parent" android:text="@string/percent_auto"
+		android:id="@+id/button_auto" android:layout_width="72dip"></Button>
 </LinearLayout>

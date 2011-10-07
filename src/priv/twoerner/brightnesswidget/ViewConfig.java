@@ -16,6 +16,7 @@ public final class ViewConfig {
     public static final String ACTION_3 = "ACTION_3";
     public static final String ACTION_4 = "ACTION_4";
     public static final String ACTION_5 = "ACTION_5";
+    public static final String ACTION_AUTO = "ACTION_AUTO";
 
     private ViewConfig() {
     };
@@ -108,6 +109,21 @@ public final class ViewConfig {
 	    views.setTextViewText(R.id.button_5, prefs.getString("button5_" + appWidgetId, "100") + "%");
 	}
 
+	// auto button
+	intent = new Intent(context, providerClass);
+	intent.setAction(ACTION_AUTO);
+	intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+	pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, 0);
+	// Get the layout for the App Widget and attach an on-click listener to the button
+	views.setOnClickPendingIntent(R.id.button_auto, pendingIntent);
+	views.setInt(R.id.button_auto, "setTextColor", mTextColor);
+	if (controlTouchBrightness && showControlTouchBrightness) {
+	    views.setTextViewText(R.id.button_auto,
+		    prefs.getString("buttonauto_" + appWidgetId, "100") + "%\n" + prefs.getString("buttonauto_touchbrightness_" + appWidgetId, "10")
+			    + "00uA");
+	} else {
+	    views.setTextViewText(R.id.button_auto, prefs.getString("buttonauto_" + appWidgetId, "100") + "%");
+	}
 	return views;
     }
 }
