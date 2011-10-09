@@ -51,9 +51,10 @@ public class BaseBrightnessWidgetProvider extends AppWidgetProvider {
 	if (intent != null && intent.getAction() != null) {
 	    String intentAction = intent.getAction();
 
+	    // TODO: Implement auto functionality
 	    if (intentAction.equals(ViewConfig.ACTION_1) || intentAction.equals(ViewConfig.ACTION_2)
 		    || intentAction.equals(ViewConfig.ACTION_3) || intentAction.equals(ViewConfig.ACTION_4)
-		    || intentAction.equals(ViewConfig.ACTION_5)) {
+		    || intentAction.equals(ViewConfig.ACTION_5) || intentAction.equals(ViewConfig.ACTION_AUTO)) {
 		Intent serviceIntent = new Intent(context, UpdateService.class);
 		serviceIntent.putExtra(UPDATE_SERVICE_ACTION, intent.getAction());
 		serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
