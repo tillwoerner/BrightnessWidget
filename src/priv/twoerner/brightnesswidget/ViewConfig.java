@@ -119,10 +119,10 @@ public final class ViewConfig {
 	views.setInt(R.id.button_auto, "setTextColor", mTextColor);
 	if (controlTouchBrightness && showControlTouchBrightness) {
 	    views.setTextViewText(R.id.button_auto,
-		    prefs.getString("buttonauto_" + appWidgetId, "100") + "%\n" + prefs.getString("buttonauto_touchbrightness_" + appWidgetId, "10")
+		    prefs.getString("buttonauto_" + appWidgetId, "Auto") + "\n" + prefs.getString("buttonauto_touchbrightness_" + appWidgetId, "10")
 			    + "00uA");
 	} else {
-	    views.setTextViewText(R.id.button_auto, prefs.getString("buttonauto_" + appWidgetId, "100") + "%");
+	    views.setTextViewText(R.id.button_auto, prefs.getString("buttonauto_" + appWidgetId, "Auto"));
 	}
 	return views;
     }

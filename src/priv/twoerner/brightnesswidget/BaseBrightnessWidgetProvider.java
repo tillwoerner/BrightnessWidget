@@ -164,15 +164,27 @@ public class BaseBrightnessWidgetProvider extends AppWidgetProvider {
 			} else if (action.equals(ViewConfig.ACTION_5)) {
 			    factorStr = prefs.getString("button5_" + mWidgetId, "100");
 			    touchButtonBrightness = prefs.getString("button5_touchbrightness_" + mWidgetId, "10");
+			} else if(action.equals(ViewConfig.ACTION_AUTO)){
+			    factorStr = null;
+			    touchButtonBrightness = prefs.getString("buttonauto_touchbrightness_" + mWidgetId, "10");
 			}
 
-			factor = Float.parseFloat(factorStr) / 100f;
-			sysBackLightValue = (int) (factor * 255);
-			Log.d(TAG, "Setting backlight value to = " + Integer.toString(sysBackLightValue));
-			Settings.System.putInt(UpdateService.this.getContentResolver(),
-				Settings.System.SCREEN_BRIGHTNESS_MODE, 0);
-			Settings.System.putInt(UpdateService.this.getContentResolver(),
-				Settings.System.SCREEN_BRIGHTNESS, sysBackLightValue);
+			// Set screen brightness mode to auto if factor is null, set to factor value otherwise
+			if(factorStr == null){
+            			Log.d(TAG, "Setting backlight value to auto");
+        			Settings.System.putInt(UpdateService.this.getContentResolver(),
+        				Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
+        			Settings.System.putInt(UpdateService.this.getContentResolver(),
+        				Settings.System.SCREEN_BRIGHTNESS, sysBackLightValue);
+			} else {
+            			factor = Float.parseFloat(factorStr) / 100f;
+        			sysBackLightValue = (int) (factor * 255);
+        			Log.d(TAG, "Setting backlight value to = " + Integer.toString(sysBackLightValue));
+        			Settings.System.putInt(UpdateService.this.getContentResolver(),
+        				Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+        			Settings.System.putInt(UpdateService.this.getContentResolver(),
+        				Settings.System.SCREEN_BRIGHTNESS, sysBackLightValue);
+			}
 
 			if (prefs.getBoolean("control_touch_brightness_" + mWidgetId, false)) {
 			    Intent touchBrightnessIntent = new Intent();
