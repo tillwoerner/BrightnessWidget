@@ -14,7 +14,9 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RemoteViews;
@@ -30,9 +32,6 @@ public class WidgetSettings extends PreferenceActivity {
 	super.onCreate(savedInstanceState);
 
 	addPreferencesFromResource(R.xml.widget_settings);
-
-	// TODO: Test if preferences can dynamically be added (Works!)
-	addPreferencesFromResource(R.xml.testcategory);
 
 	setResult(RESULT_CANCELED);
 
@@ -75,33 +74,38 @@ public class WidgetSettings extends PreferenceActivity {
 
     // TODO: Clean up code and secure it (externalize strings, etc)
     private boolean addButton() {
-	
-	XmlResourceParser parser = getResources().getXml(R.xml.testcategory);
+
+	XmlResourceParser parser = getResources().getXml(R.xml.widget_button_setting);
+	AttributeSet attributeSet = null;
+	int eventType = 0;
 	try {
-	    while(parser.nextTag() == parser.START_TAG){
-		Log.d(TAG, parser.getText());
+	    while ((eventType = parser.next()) != XmlResourceParser.END_DOCUMENT) {
+		if (eventType == XmlResourceParser.START_TAG) {
+		    Log.d(TAG, "Found tag: " + parser.getName());
+		    if (parser.getName().equals("priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference")) {
+			attributeSet = Xml.asAttributeSet(parser);
+			break;
+		    }
+		}
 	    }
+	    Preference tmpPreference = new CustomNumberEditTextPreference(this, attributeSet);
+	    for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
+		Preference cPreference = getPreferenceScreen().getPreference(i);
+		if (cPreference != null && cPreference instanceof PreferenceCategory && cPreference.getTitle() != null
+			&& cPreference.getTitle().equals("Buttons")) {
+		    ((PreferenceCategory) cPreference).addItemFromInflater(tmpPreference);
+		    return true;
+		}
+	    }
+	    Log.e(TAG, "Could not find parent preference category");
 	} catch (XmlPullParserException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	    Log.e(TAG, e.getMessage(), e);
 	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	    Log.e(TAG, e.getMessage(), e);
+	} finally {
+	    parser.close();
 	}
-	
-	Preference tmpPreference = new CustomNumberEditTextPreference(this);
-	tmpPreference.setKey("button1");
-	tmpPreference.setTitle("Button 1");
-	tmpPreference.setDefaultValue(20);
-	for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
-	    Preference cPreference = getPreferenceScreen().getPreference(i);
-	    if (cPreference != null && cPreference instanceof PreferenceCategory && cPreference.getTitle() != null
-		    && cPreference.getTitle().equals("Buttons")) {
-		((PreferenceCategory) cPreference).addItemFromInflater(tmpPreference);
-		return true;
-	    }
-	}
-	Log.d(TAG, "Could not find parent preference category");
+
 	return false;
     }
 
