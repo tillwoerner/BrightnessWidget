@@ -1,18 +1,22 @@
 package priv.twoerner.brightnesswidget;
 
-import java.util.List;
+import java.io.IOException;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
+import android.content.res.XmlResourceParser;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.RemoteViews;
 
 public class WidgetSettings extends PreferenceActivity {
@@ -24,10 +28,14 @@ public class WidgetSettings extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
+
 	addPreferencesFromResource(R.xml.widget_settings);
+
+	// TODO: Test if preferences can dynamically be added (Works!)
+	addPreferencesFromResource(R.xml.testcategory);
+
 	setResult(RESULT_CANCELED);
 
-	// TODO: Save preferences for each widget instance?
 	Bundle extras = getIntent().getExtras();
 	if (extras != null) {
 	    mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
@@ -36,26 +44,65 @@ public class WidgetSettings extends PreferenceActivity {
 	Log.d(TAG, "Widget ID = " + mAppWidgetId);
 
 	changePreferencesKeys(getPreferenceScreen());
-	findPreference("show_touch_brightness_value_" + mAppWidgetId).setDependency("control_touch_brightness_" + mAppWidgetId);
+    }
 
-	Intent touchBrightnessIntent = new Intent();
-	touchBrightnessIntent.setAction(BaseBrightnessWidgetProvider.ACTION_CHANGE_TOUCH_BRIGHTNESS);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-	PackageManager packageManager = getPackageManager();
-	List<ResolveInfo> list = packageManager.queryBroadcastReceivers(touchBrightnessIntent, 0);
-	if (list != null && list.size() > 0) {
-	    // TouchBrightness seems to be installed, enable additional settings
-	    findPreference("button1_touchbrightness_" + mAppWidgetId).setEnabled(true);
-	    findPreference("button2_touchbrightness_" + mAppWidgetId).setEnabled(true);
-	    findPreference("button3_touchbrightness_" + mAppWidgetId).setEnabled(true);
-	    findPreference("button4_touchbrightness_" + mAppWidgetId).setEnabled(true);
-	    findPreference("button5_touchbrightness_" + mAppWidgetId).setEnabled(true);
+	if (super.onCreateOptionsMenu(menu)) {
+	    getMenuInflater().inflate(R.menu.widget_settings_menu, menu);
+	    return true;
 	} else {
-	    CheckBoxPreference checkBoxPreference = (CheckBoxPreference) findPreference("control_touch_brightness_" + mAppWidgetId);
-	    checkBoxPreference.setSummaryOff(getString(R.string.settings_control_touch_brightness_summary_na));
-	    checkBoxPreference.setChecked(false);
-	    checkBoxPreference.setEnabled(false);
+	    return false;
 	}
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+	switch (item.getItemId()) {
+	case (R.id.add):
+	    Log.d(TAG, "Add menu item selected");
+	    addButton();
+	    return true;
+	case (R.id.remove):
+	    Log.d(TAG, "Remove menu item selected");
+	    return true;
+	}
+
+	return super.onOptionsItemSelected(item);
+    }
+
+    // TODO: Clean up code and secure it (externalize strings, etc)
+    private boolean addButton() {
+	
+	XmlResourceParser parser = getResources().getXml(R.xml.testcategory);
+	try {
+	    while(parser.nextTag() == parser.START_TAG){
+		Log.d(TAG, parser.getText());
+	    }
+	} catch (XmlPullParserException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	
+	Preference tmpPreference = new CustomNumberEditTextPreference(this);
+	tmpPreference.setKey("button1");
+	tmpPreference.setTitle("Button 1");
+	tmpPreference.setDefaultValue(20);
+	for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
+	    Preference cPreference = getPreferenceScreen().getPreference(i);
+	    if (cPreference != null && cPreference instanceof PreferenceCategory && cPreference.getTitle() != null
+		    && cPreference.getTitle().equals("Buttons")) {
+		((PreferenceCategory) cPreference).addItemFromInflater(tmpPreference);
+		return true;
+	    }
+	}
+	Log.d(TAG, "Could not find parent preference category");
+	return false;
     }
 
     @Override
@@ -86,6 +133,14 @@ public class WidgetSettings extends PreferenceActivity {
 	super.onBackPressed();
     }
 
+    /**
+     * Changes the keys of all referenced preference keys below the given root
+     * and appends the current widget id. Pease note that the method dows not
+     * remove a widget id first, it is always appended!
+     * 
+     * @param preference
+     *            The root preference to start with
+     */
     private void changePreferencesKeys(Preference preference) {
 	if (preference == null) {
 	    return;

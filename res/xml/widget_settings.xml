@@ -1,69 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orderingFromXml="true" android:key="brightnesswidget_prefs"
-	android:title="@string/settings_title" android:persistent="true">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:orderingFromXml="true"
+	android:key="brightnesswidget_prefs" android:title="@string/settings_title" android:persistent="true">
 	<PreferenceCategory android:orderingFromXml="true" android:title="Colors">
-	<priv.twoerner.brightnesswidget.customctrls.CustomColorPreference android:key="widget_text_color" android:title="Widget text color">
-	</priv.twoerner.brightnesswidget.customctrls.CustomColorPreference> 
-		</PreferenceCategory>
-	<PreferenceCategory android:title="General">
-		<CheckBoxPreference android:key="control_touch_brightness"
-			android:defaultValue="false"
-			android:summaryOn="@string/settings_control_touch_brightness_summary_on"
-			android:summaryOff="@string/settings_control_touch_brightness_summary_off"
-			android:title="Touch brightness control"></CheckBoxPreference>
-		<CheckBoxPreference android:key="show_touch_brightness_value"
-			android:defaultValue="false" android:title="Show touch brightness control values"
-			android:summary="@string/show_touch_brightness_value_summary"></CheckBoxPreference>
+		<priv.twoerner.brightnesswidget.customctrls.CustomColorPreference
+			android:key="widget_text_color" android:title="Widget text color">
+		</priv.twoerner.brightnesswidget.customctrls.CustomColorPreference>
 	</PreferenceCategory>
-	<PreferenceCategory android:title="Button 1"
-		android:orderingFromXml="true">
+	<!-- PreferenceCategory android:title="Button 1" android:orderingFromXml="true">
 		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
 			android:key="button1" android:title="Button 1" android:defaultValue="20">
 		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
-		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
-			android:key="button1_touchbrightness" android:title="Button 1 - Touch Brightness"
-			min="0" max="20" android:defaultValue="10" android:enabled="false">
-		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
 	</PreferenceCategory>
-	<PreferenceCategory android:title="Button 2"
-		android:orderingFromXml="true">
+	<PreferenceCategory android:title="Button 2" android:orderingFromXml="true">
 		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
 			android:key="button2" android:title="Button 2" android:defaultValue="40">
 		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
-		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
-			android:key="button2_touchbrightness" android:title="Button 2 - Touch Brightness"
-			min="0" max="20" android:defaultValue="10" android:enabled="false">
-		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
 	</PreferenceCategory>
-	<PreferenceCategory android:title="Button 3"
-		android:orderingFromXml="true">
+	<PreferenceCategory android:title="Button 3" android:orderingFromXml="true">
 		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
 			android:key="button3" android:title="Button 3" android:defaultValue="60">
 		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
-		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
-			android:key="button3_touchbrightness" android:title="Button 3 - Touch Brightness"
-			min="0" max="20" android:defaultValue="10" android:enabled="false">
-		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
 	</PreferenceCategory>
-	<PreferenceCategory android:title="Button 4"
-		android:orderingFromXml="true">
+	<PreferenceCategory android:title="Button 4" android:orderingFromXml="true">
 		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
 			android:key="button4" android:title="Button 4" android:defaultValue="80">
 		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
-		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
-			android:key="button4_touchbrightness" android:title="Button 4 - Touch Brightness"
-			min="0" max="20" android:defaultValue="10" android:enabled="false">
-		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
 	</PreferenceCategory>
-	<PreferenceCategory android:title="Button 5"
-		android:orderingFromXml="true">
+	<PreferenceCategory android:title="Button 5" android:orderingFromXml="true">
 		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
 			android:key="button5" android:title="Button 5" android:defaultValue="100">
 		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
-		<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
-			android:key="button5_touchbrightness" android:title="Button 5 - Touch Brightness"
-			min="0" max="20" android:defaultValue="10" android:enabled="false">
-		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
+	</PreferenceCategory -->
+	<PreferenceCategory android:title="Buttons">
 	</PreferenceCategory>
 </PreferenceScreen>
