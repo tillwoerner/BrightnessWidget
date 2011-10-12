@@ -22,4 +22,6 @@
 	</style>
 		<string name="add">Add button</string>
 		<string name="remove">Remove button</string>
+		<string name="addAutoButton">Add auto button</string>
+		<string name="settings_button_category_title">Buttons</string>
 </resources>

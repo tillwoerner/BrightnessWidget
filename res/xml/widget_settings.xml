@@ -31,6 +31,6 @@
 			android:key="button5" android:title="Button 5" android:defaultValue="100">
 		</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
 	</PreferenceCategory -->
-	<PreferenceCategory android:title="Buttons">
+	<PreferenceCategory android:title="@string/settings_button_category_title">
 	</PreferenceCategory>
 </PreferenceScreen>

@@ -10,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
@@ -17,8 +18,11 @@ import android.preference.PreferenceGroup;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RemoteViews;
 
 public class WidgetSettings extends PreferenceActivity {
@@ -26,6 +30,7 @@ public class WidgetSettings extends PreferenceActivity {
     private final static String TAG = "priv.twoerner.brightnesswidget.WidgetSettings";
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private int numberOfButtons = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +71,31 @@ public class WidgetSettings extends PreferenceActivity {
 	    return true;
 	case (R.id.remove):
 	    Log.d(TAG, "Remove menu item selected");
+	    removeButton();
+	    return true;
+	case (R.id.addAutoButton):
+	    Log.d(TAG, "Add auto button menu item selected");
+	    addAutoButton();
 	    return true;
 	}
 
 	return super.onOptionsItemSelected(item);
     }
 
-    // TODO: Clean up code and secure it (externalize strings, etc)
+    // TODO: Implement
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        Log.d(TAG, "Context menu for item:" + item.getItemId());
+        return super.onContextItemSelected(item);
+    }
+    
+    // TODO: Implement
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        // TODO Auto-generated method stub
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+    
     private boolean addButton() {
 
 	XmlResourceParser parser = getResources().getXml(R.xml.widget_button_setting);
@@ -81,7 +104,6 @@ public class WidgetSettings extends PreferenceActivity {
 	try {
 	    while ((eventType = parser.next()) != XmlResourceParser.END_DOCUMENT) {
 		if (eventType == XmlResourceParser.START_TAG) {
-		    Log.d(TAG, "Found tag: " + parser.getName());
 		    if (parser.getName().equals("priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference")) {
 			attributeSet = Xml.asAttributeSet(parser);
 			break;
@@ -92,8 +114,9 @@ public class WidgetSettings extends PreferenceActivity {
 	    for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
 		Preference cPreference = getPreferenceScreen().getPreference(i);
 		if (cPreference != null && cPreference instanceof PreferenceCategory && cPreference.getTitle() != null
-			&& cPreference.getTitle().equals("Buttons")) {
+			&& cPreference.getTitle().equals(getString(R.string.settings_button_category_title))) {
 		    ((PreferenceCategory) cPreference).addItemFromInflater(tmpPreference);
+		    numberOfButtons++;
 		    return true;
 		}
 	    }
@@ -109,6 +132,62 @@ public class WidgetSettings extends PreferenceActivity {
 	return false;
     }
 
+    private boolean addAutoButton() {
+
+	XmlResourceParser parser = getResources().getXml(R.xml.widget_auto_button_setting);
+	AttributeSet attributeSet = null;
+	int eventType = 0;
+	try {
+	    while ((eventType = parser.next()) != XmlResourceParser.END_DOCUMENT) {
+		if (eventType == XmlResourceParser.START_TAG) {
+		    if (parser.getName().equals("EditTextPreference")) {
+			attributeSet = Xml.asAttributeSet(parser);
+			break;
+		    }
+		}
+	    }
+	    Preference tmpPreference = new EditTextPreference(this, attributeSet);
+	    for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
+		Preference cPreference = getPreferenceScreen().getPreference(i);
+		if (cPreference != null && cPreference instanceof PreferenceCategory && cPreference.getTitle() != null
+			&& cPreference.getTitle().equals(getString(R.string.settings_button_category_title))) {
+		    ((PreferenceCategory) cPreference).addItemFromInflater(tmpPreference);
+		    registerForContextMenu(tmpPreference.getView(null, null));
+		    numberOfButtons++;
+		    return true;
+		}
+	    }
+	    Log.e(TAG, "Could not find parent preference category");
+	} catch (XmlPullParserException e) {
+	    Log.e(TAG, e.getMessage(), e);
+	} catch (IOException e) {
+	    Log.e(TAG, e.getMessage(), e);
+	} finally {
+	    parser.close();
+	}
+
+	return false;
+    }
+    
+    private boolean removeButton() {
+	for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
+	    Preference cPreference = getPreferenceScreen().getPreference(i);
+	    if (cPreference != null && cPreference instanceof PreferenceCategory && cPreference.getTitle() != null
+		    && cPreference.getTitle().equals(getString(R.string.settings_button_category_title))) {
+
+		int childCount = ((PreferenceCategory) cPreference).getPreferenceCount();
+		if (childCount > 0) {
+		    Preference removePref = ((PreferenceCategory) cPreference).getPreference(childCount - 1);
+		    if (((PreferenceCategory) cPreference).removePreference(removePref)) {
+			numberOfButtons--;
+			return true;
+		    }
+		}
+	    }
+	}
+	return false;
+    }
+
     @Override
     public void onBackPressed() {
 	Intent intent = getIntent();
@@ -116,23 +195,25 @@ public class WidgetSettings extends PreferenceActivity {
 	if (extras != null) {
 	    mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 	}
-	try {
-	    if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+	if (numberOfButtons > 0) {
+	    try {
+		if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+		    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
 
-		RemoteViews views = new RemoteViews(getPackageName(), R.layout.brightness_widget);
+		    RemoteViews views = new RemoteViews(getPackageName(), R.layout.brightness_widget);
 
-		ComponentName cName = appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider;
-		views = ViewConfig.configView(views, this, mAppWidgetId, Class.forName(cName.getClassName()));
+		    ComponentName cName = appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider;
+		    views = ViewConfig.configView(views, this, mAppWidgetId, Class.forName(cName.getClassName()));
 
-		appWidgetManager.updateAppWidget(mAppWidgetId, views);
+		    appWidgetManager.updateAppWidget(mAppWidgetId, views);
 
-		Intent resultValue = new Intent();
-		resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-		setResult(RESULT_OK, resultValue);
+		    Intent resultValue = new Intent();
+		    resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+		    setResult(RESULT_OK, resultValue);
+		}
+	    } catch (ClassNotFoundException cnfe) {
+		Log.e(TAG, cnfe.getMessage(), cnfe);
 	    }
-	} catch (ClassNotFoundException cnfe) {
-	    Log.e(TAG, cnfe.getMessage(), cnfe);
 	}
 	super.onBackPressed();
     }

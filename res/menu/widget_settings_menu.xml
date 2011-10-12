@@ -3,5 +3,6 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:title="@string/add" android:id="@+id/add"></item>
     <item android:title="@string/remove" android:id="@+id/remove"></item>
+    <item android:title="@string/addAutoButton" android:id="@+id/addAutoButton"></item>
     
 </menu>
