@@ -31,6 +31,7 @@ public class WidgetSettings extends PreferenceActivity {
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private int numberOfButtons = 0;
+    private boolean contextMenuIsShowing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class WidgetSettings extends PreferenceActivity {
 	Log.d(TAG, "Widget ID = " + mAppWidgetId);
 
 	changePreferencesKeys(getPreferenceScreen());
+	registerForContextMenu(getListView());
     }
 
     @Override
@@ -85,17 +87,37 @@ public class WidgetSettings extends PreferenceActivity {
     // TODO: Implement
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        Log.d(TAG, "Context menu for item:" + item.getItemId());
-        return super.onContextItemSelected(item);
+	Log.d(TAG, "Context menu for item:" + item.getItemId());
+	return super.onContextItemSelected(item);
     }
-    
+
     // TODO: Implement
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        // TODO Auto-generated method stub
-        super.onCreateContextMenu(menu, v, menuInfo);
+	// if(!(menuInfo instanceof AdapterContextMenuInfo)){
+	// return;
+	// }
+	// AdapterContextMenuInfo adapterContextMenuInfo =
+	// (AdapterContextMenuInfo) menuInfo;
+	// Preference pref =
+	// getPreferenceScreen().getPreference(adapterContextMenuInfo.position);
+	// // Display menu only for buttons
+	// if(pref == null || pref.getKey() == null ||
+	// !pref.getKey().startsWith("button")){
+	// return;
+	// }
+	// getMenuInflater().inflate(R.menu.widget_settings_button_ctxmenu,
+	// menu);
+	// super.onCreateContextMenu(menu, v, menuInfo);
+	// contextMenuIsShowing = true;
     }
-    
+
+    @Override
+    public void onContextMenuClosed(Menu menu) {
+	super.onContextMenuClosed(menu);
+	contextMenuIsShowing = false;
+    }
+
     private boolean addButton() {
 
 	XmlResourceParser parser = getResources().getXml(R.xml.widget_button_setting);
@@ -152,7 +174,6 @@ public class WidgetSettings extends PreferenceActivity {
 		if (cPreference != null && cPreference instanceof PreferenceCategory && cPreference.getTitle() != null
 			&& cPreference.getTitle().equals(getString(R.string.settings_button_category_title))) {
 		    ((PreferenceCategory) cPreference).addItemFromInflater(tmpPreference);
-		    registerForContextMenu(tmpPreference.getView(null, null));
 		    numberOfButtons++;
 		    return true;
 		}
@@ -168,7 +189,7 @@ public class WidgetSettings extends PreferenceActivity {
 
 	return false;
     }
-    
+
     private boolean removeButton() {
 	for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
 	    Preference cPreference = getPreferenceScreen().getPreference(i);
@@ -190,6 +211,12 @@ public class WidgetSettings extends PreferenceActivity {
 
     @Override
     public void onBackPressed() {
+
+	// Do not close the activity if context menu is showing
+	if (contextMenuIsShowing) {
+	    return;
+	}
+
 	Intent intent = getIntent();
 	Bundle extras = intent.getExtras();
 	if (extras != null) {
