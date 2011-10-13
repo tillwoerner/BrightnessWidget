@@ -85,7 +85,6 @@ public class WidgetSettings extends PreferenceActivity {
 	return super.onOptionsItemSelected(item);
     }
 
-    // TODO: Implement
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 	if (!(item.getMenuInfo() instanceof AdapterContextMenuInfo)) {
@@ -131,6 +130,11 @@ public class WidgetSettings extends PreferenceActivity {
 	contextMenuIsShowing = false;
     }
 
+    /**
+     * Adds a button to the preference screen
+     * 
+     * @return If a button has been added or not
+     */
     private boolean addButton() {
 
 	XmlResourceParser parser = getResources().getXml(R.xml.widget_button_setting);
@@ -167,6 +171,11 @@ public class WidgetSettings extends PreferenceActivity {
 	return false;
     }
 
+    /**
+     * Adds an auto button to the preference screen
+     * 
+     * @return If a button has been added or not
+     */
     private boolean addAutoButton() {
 
 	XmlResourceParser parser = getResources().getXml(R.xml.widget_auto_button_setting);
@@ -203,6 +212,11 @@ public class WidgetSettings extends PreferenceActivity {
 	return false;
     }
 
+    /**
+     * Removes the last button from the preference screen
+     * 
+     * @return If the last button could be removed or not
+     */
     private boolean removeButton() {
 	for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
 	    Preference cPreference = getPreferenceScreen().getPreference(i);
@@ -222,7 +236,18 @@ public class WidgetSettings extends PreferenceActivity {
 	return false;
     }
 
+    /**
+     * Removes a specific preference from the preference screen
+     * 
+     * @param preference
+     *            The preference to remove from the screen
+     * @return If the preference could be removed or not
+     */
     private boolean removeButton(Preference preference) {
+
+	if (preference == null) {
+	    return false;
+	}
 
 	for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
 	    Preference cPreference = getPreferenceScreen().getPreference(i);
