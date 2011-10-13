@@ -23,6 +23,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.RemoteViews;
 
 public class WidgetSettings extends PreferenceActivity {
@@ -67,18 +68,18 @@ public class WidgetSettings extends PreferenceActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
 	switch (item.getItemId()) {
-	case (R.id.add):
-	    Log.d(TAG, "Add menu item selected");
-	    addButton();
-	    return true;
-	case (R.id.remove):
-	    Log.d(TAG, "Remove menu item selected");
-	    removeButton();
-	    return true;
-	case (R.id.addAutoButton):
-	    Log.d(TAG, "Add auto button menu item selected");
-	    addAutoButton();
-	    return true;
+	    case (R.id.add):
+		Log.d(TAG, "Add menu item selected");
+		addButton();
+		return true;
+	    case (R.id.remove):
+		Log.d(TAG, "Remove menu item selected");
+		removeButton();
+		return true;
+	    case (R.id.addAutoButton):
+		Log.d(TAG, "Add auto button menu item selected");
+		addAutoButton();
+		return true;
 	}
 
 	return super.onOptionsItemSelected(item);
@@ -87,29 +88,41 @@ public class WidgetSettings extends PreferenceActivity {
     // TODO: Implement
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-	Log.d(TAG, "Context menu for item:" + item.getItemId());
+	if (!(item.getMenuInfo() instanceof AdapterContextMenuInfo)) {
+	    return false;
+	}
+
+	switch (item.getItemId()) {
+	    case (R.id.ctxRemove):
+		AdapterContextMenuInfo adapterContextMenuInfo = (AdapterContextMenuInfo) item.getMenuInfo();
+		Log.d(TAG, "onContextItemSelected -> menuInfo -> position: " + adapterContextMenuInfo.position);
+		Preference pref = (Preference) getListView().getItemAtPosition(adapterContextMenuInfo.position);
+		removeButton(pref);
+		break;
+	}
+
 	return super.onContextItemSelected(item);
     }
 
-    // TODO: Implement
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-	// if(!(menuInfo instanceof AdapterContextMenuInfo)){
-	// return;
+	if (!(menuInfo instanceof AdapterContextMenuInfo)) {
+	    return;
+	}
+
+	AdapterContextMenuInfo adapterContextMenuInfo = (AdapterContextMenuInfo) menuInfo;
+	Log.d(TAG, "onCreateContextMenu -> menuInfo -> position: " + adapterContextMenuInfo.position);
+	Preference pref = (Preference) getListView().getItemAtPosition(adapterContextMenuInfo.position);
+
+	// if (pref != null) {
+	// pref.setTitle(pref.getTitle() + "_");
 	// }
-	// AdapterContextMenuInfo adapterContextMenuInfo =
-	// (AdapterContextMenuInfo) menuInfo;
-	// Preference pref =
-	// getPreferenceScreen().getPreference(adapterContextMenuInfo.position);
-	// // Display menu only for buttons
-	// if(pref == null || pref.getKey() == null ||
-	// !pref.getKey().startsWith("button")){
-	// return;
-	// }
-	// getMenuInflater().inflate(R.menu.widget_settings_button_ctxmenu,
-	// menu);
-	// super.onCreateContextMenu(menu, v, menuInfo);
-	// contextMenuIsShowing = true;
+	if (pref == null || pref.getKey() == null || !pref.getKey().startsWith("button")) {
+	    return;
+	}
+	getMenuInflater().inflate(R.menu.widget_settings_button_ctxmenu, menu);
+	super.onCreateContextMenu(menu, v, menuInfo);
+	contextMenuIsShowing = true;
     }
 
     @Override
@@ -204,6 +217,23 @@ public class WidgetSettings extends PreferenceActivity {
 			return true;
 		    }
 		}
+	    }
+	}
+	return false;
+    }
+
+    private boolean removeButton(Preference preference) {
+
+	for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
+	    Preference cPreference = getPreferenceScreen().getPreference(i);
+	    if (cPreference != null && cPreference instanceof PreferenceCategory && cPreference.getTitle() != null
+		    && cPreference.getTitle().equals(getString(R.string.settings_button_category_title))) {
+
+		if (((PreferenceCategory) cPreference).removePreference(preference)) {
+		    numberOfButtons--;
+		    return true;
+		}
+
 	    }
 	}
 	return false;
