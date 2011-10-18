@@ -8,6 +8,7 @@ import priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -15,6 +16,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Xml;
@@ -27,6 +29,9 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.RemoteViews;
 
 public class WidgetSettings extends PreferenceActivity {
+
+    // TODO: On adding buttons the key of the button must be set dynamically.
+    // Also, the total number of buttons must be stored in the preferences
 
     private final static String TAG = "priv.twoerner.brightnesswidget.WidgetSettings";
 
@@ -285,7 +290,14 @@ public class WidgetSettings extends PreferenceActivity {
 		    RemoteViews views = new RemoteViews(getPackageName(), R.layout.brightness_widget);
 
 		    ComponentName cName = appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider;
-		    views = ViewConfig.configView(views, this, mAppWidgetId, Class.forName(cName.getClassName()));
+		    Class<?> providerClass = Class.forName(cName.getClassName());
+
+		    // Save the number of buttons on this widget
+		    Editor preferenceEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+		    preferenceEditor.putInt("button_count_" + mAppWidgetId, numberOfButtons);
+		    preferenceEditor.commit();
+
+		    views = ViewConfig.configView(views, this, mAppWidgetId, providerClass);
 
 		    appWidgetManager.updateAppWidget(mAppWidgetId, views);
 

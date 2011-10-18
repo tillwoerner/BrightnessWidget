@@ -1,5 +1,9 @@
 package priv.twoerner.brightnesswidget;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -7,10 +11,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 public final class ViewConfig {
 
+    private final static String TAG = "priv.twoerner.brightnesswidget.ViewConfig";
     public static final String ACTION_1 = "ACTION_1";
     public static final String ACTION_2 = "ACTION_2";
     public static final String ACTION_3 = "ACTION_3";
@@ -24,8 +30,19 @@ public final class ViewConfig {
     public static RemoteViews configView(RemoteViews views, Context context, int appWidgetId, Class<?> providerClass) {
 
 	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+	List<String> preferenceKeys = new ArrayList<String>();
 
 	int mTextColor = Integer.parseInt(prefs.getString("widget_text_color_" + appWidgetId, Integer.toString(Color.WHITE)));
+
+	// TODO: read number of buttons and their configuration from the
+	// preferences
+	Map<String, ?> preferenceMap = prefs.getAll();
+	for (String key : preferenceMap.keySet()) {
+	    Log.d(TAG, "Key: " + key);
+	    if (key.endsWith("_" + appWidgetId)) {
+		preferenceKeys.add(key);
+	    }
+	}
 
 	// 20 percent button
 	Intent intent = new Intent(context, providerClass);
