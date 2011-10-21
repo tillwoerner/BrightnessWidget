@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceCategory xmlns:android="http://schemas.android.com/apk/res/android">
 	<EditTextPreference
-		android:key="button_auto" android:title="Auto button" android:defaultValue="auto" android:editable="false">
+		android:key="auto_button" android:title="Auto button" android:defaultValue="auto" android:editable="false">
 	</EditTextPreference>
 </PreferenceCategory>
 

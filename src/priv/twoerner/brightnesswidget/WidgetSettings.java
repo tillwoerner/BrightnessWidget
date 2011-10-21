@@ -33,6 +33,9 @@ public class WidgetSettings extends PreferenceActivity {
     // TODO: On adding buttons the key of the button must be set dynamically.
     // Also, the total number of buttons must be stored in the preferences
 
+    public final static String NORMAL_BTN_PREFIX = "button";
+    public final static String AUTO_BTN_PREFIX = "auto_button";
+
     private final static String TAG = "priv.twoerner.brightnesswidget.WidgetSettings";
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
@@ -159,8 +162,10 @@ public class WidgetSettings extends PreferenceActivity {
 		Preference cPreference = getPreferenceScreen().getPreference(i);
 		if (cPreference != null && cPreference instanceof PreferenceCategory && cPreference.getTitle() != null
 			&& cPreference.getTitle().equals(getString(R.string.settings_button_category_title))) {
-		    ((PreferenceCategory) cPreference).addItemFromInflater(tmpPreference);
 		    numberOfButtons++;
+		    tmpPreference.setKey(NORMAL_BTN_PREFIX + "_" + numberOfButtons + "_" + mAppWidgetId);
+		    ((PreferenceCategory) cPreference).addItemFromInflater(tmpPreference);
+		    // numberOfButtons++;
 		    return true;
 		}
 	    }
@@ -200,8 +205,9 @@ public class WidgetSettings extends PreferenceActivity {
 		Preference cPreference = getPreferenceScreen().getPreference(i);
 		if (cPreference != null && cPreference instanceof PreferenceCategory && cPreference.getTitle() != null
 			&& cPreference.getTitle().equals(getString(R.string.settings_button_category_title))) {
-		    ((PreferenceCategory) cPreference).addItemFromInflater(tmpPreference);
 		    numberOfButtons++;
+		    tmpPreference.setKey(AUTO_BTN_PREFIX + "_" + numberOfButtons + "_" + mAppWidgetId);
+		    ((PreferenceCategory) cPreference).addItemFromInflater(tmpPreference);
 		    return true;
 		}
 	    }

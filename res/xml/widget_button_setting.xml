@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceCategory xmlns:android="http://schemas.android.com/apk/res/android">
 	<priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference
-		android:key="button1" android:title="Button 1" android:defaultValue="20">
+		android:key="button" android:title="Button 1" android:defaultValue="20">
 	</priv.twoerner.brightnesswidget.customctrls.CustomNumberEditTextPreference>
 </PreferenceCategory>
 

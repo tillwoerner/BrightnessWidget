@@ -12,6 +12,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.RemoteViews;
 
 public final class ViewConfig {
@@ -38,11 +40,14 @@ public final class ViewConfig {
 	// preferences
 	Map<String, ?> preferenceMap = prefs.getAll();
 	for (String key : preferenceMap.keySet()) {
-	    Log.d(TAG, "Key: " + key);
 	    if (key.endsWith("_" + appWidgetId)) {
 		preferenceKeys.add(key);
+		Log.d(TAG, "Key for widget ID " + appWidgetId + ": " + key);
 	    }
 	}
+
+	View button = LayoutInflater.from(context).inflate(R.layout.brightness_widget, null);
+	// views.addView(R.id.rootLinearLayout, button);
 
 	// 20 percent button
 	Intent intent = new Intent(context, providerClass);
